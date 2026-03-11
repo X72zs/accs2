@@ -7,12 +7,159 @@
     <!-- أيقونة الموقع (Favicon) -->
     <link rel="icon" href="data:image/svg+xml,<svg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 100 100'><text y='.9em' font-size='90'>📱</text></svg>" type="image/svg+xml">
     
-    <title>نشر حسابات وأدوات - abumisfer</title>
+    <title>RTLS ACCS</title>
+    
+    <!-- ============================================= -->
+    <!-- حماية Dev Tools - يتم تحميلها أولاً -->
+    <!-- ============================================= -->
+    <script>
+        // منع النقر بزر الفأرة الأيمن
+        document.addEventListener('contextmenu', function(e) {
+            e.preventDefault();
+            return false;
+        });
+
+        // منع اختصارات لوحة المفاتيح الخطيرة
+        document.addEventListener('keydown', function(e) {
+            // منع F12
+            if (e.key === 'F12') {
+                e.preventDefault();
+                return false;
+            }
+            
+            // منع Ctrl+Shift+I (فتح الأدوات)
+            if (e.ctrlKey && e.shiftKey && e.key === 'I') {
+                e.preventDefault();
+                return false;
+            }
+            
+            // منع Ctrl+Shift+J (فتح الكونسول)
+            if (e.ctrlKey && e.shiftKey && e.key === 'J') {
+                e.preventDefault();
+                return false;
+            }
+            
+            // منع Ctrl+Shift+C (فحص العنصر)
+            if (e.ctrlKey && e.shiftKey && e.key === 'C') {
+                e.preventDefault();
+                return false;
+            }
+            
+            // منع Ctrl+U (عرض المصدر)
+            if (e.ctrlKey && e.key === 'u') {
+                e.preventDefault();
+                return false;
+            }
+            
+            // منع Ctrl+S (حفظ الصفحة)
+            if (e.ctrlKey && e.key === 's') {
+                e.preventDefault();
+                return false;
+            }
+        });
+
+        // كشف محاولة فتح Dev Tools
+        (function() {
+            const devToolsChecker = {
+                isOpen: false,
+                
+                check: function() {
+                    const widthThreshold = window.outerWidth - window.innerWidth > 160;
+                    const heightThreshold = window.outerHeight - window.innerHeight > 160;
+                    
+                    if (widthThreshold || heightThreshold) {
+                        if (!this.isOpen) {
+                            this.isOpen = true;
+                            this.onOpen();
+                        }
+                    } else {
+                        if (this.isOpen) {
+                            this.isOpen = false;
+                        }
+                    }
+                    
+                    // التحقق باستخدام console.log
+                    const element = new Image();
+                    Object.defineProperty(element, 'id', {
+                        get: function() {
+                            if (!devToolsChecker.isOpen) {
+                                devToolsChecker.isOpen = true;
+                                devToolsChecker.onOpen();
+                            }
+                            return '';
+                        }
+                    });
+                    
+                    console.log('%c', element);
+                },
+                
+                onOpen: function() {
+                    // إجراء عند اكتشاف فتح Dev Tools
+                    document.body.innerHTML = '<div style="height:100vh; display:flex; align-items:center; justify-content:center; background:linear-gradient(135deg, #667eea 0%, #764ba2 100%); color:white; font-family:Tajawal, sans-serif; text-align:center; padding:20px;"><div><h1 style="font-size:3em; margin-bottom:20px;">🚫</h1><h2 style="font-size:2em; margin-bottom:10px;">تم اكتشاف أدوات المطور!</h2><p style="font-size:1.2em; opacity:0.9;">غير مسموح بفتح أدوات المطور في هذه الصفحة.</p></div></div>';
+                    
+                    // منع أي تفاعل إضافي
+                    throw new Error('Dev Tools Detected');
+                }
+            };
+            
+            // فحص كل ثانية
+            setInterval(function() {
+                devToolsChecker.check();
+            }, 1000);
+            
+            // فحص إضافي عند تغيير حجم النافذة
+            window.addEventListener('resize', function() {
+                devToolsChecker.check();
+            });
+        })();
+
+        // تعطيل وظيفة console.log
+        if (typeof console !== 'undefined') {
+            console.log = function() {};
+            console.info = function() {};
+            console.warn = function() {};
+            console.error = function() {};
+            console.debug = function() {};
+        }
+
+        // منع سحب النص وتحديده
+        document.addEventListener('selectstart', function(e) {
+            e.preventDefault();
+            return false;
+        });
+
+        document.addEventListener('dragstart', function(e) {
+            e.preventDefault();
+            return false;
+        });
+
+        // منع نسخ النص
+        document.addEventListener('copy', function(e) {
+            e.preventDefault();
+            return false;
+        });
+
+        document.addEventListener('cut', function(e) {
+            e.preventDefault();
+            return false;
+        });
+
+        document.addEventListener('paste', function(e) {
+            e.preventDefault();
+            return false;
+        });
+    </script>
+    
     <style>
         * {
             margin: 0;
             padding: 0;
             box-sizing: border-box;
+            /* منع تحديد النص عبر CSS */
+            -webkit-user-select: none;
+            -moz-user-select: none;
+            -ms-user-select: none;
+            user-select: none;
         }
 
         body {
@@ -117,6 +264,26 @@
         .subtitle {
             color: #666;
             font-size: 1.2em;
+            margin-bottom: 10px;
+        }
+
+        /* الرابط تحت العنوان */
+        .header-link {
+            display: inline-block;
+            margin-top: 10px;
+            padding: 8px 20px;
+            background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+            color: white;
+            text-decoration: none;
+            border-radius: 30px;
+            font-weight: bold;
+            transition: transform 0.3s, box-shadow 0.3s;
+            pointer-events: auto;
+        }
+
+        .header-link:hover {
+            transform: translateY(-2px);
+            box-shadow: 0 5px 15px rgba(118, 75, 162, 0.4);
         }
 
         /* شبكة العناصر */
@@ -202,6 +369,8 @@
             height: 100%;
             object-fit: cover;
             transition: transform 0.3s;
+            /* منع سحب الصور */
+            pointer-events: none;
         }
 
         .item-card:hover .item-image img {
@@ -224,6 +393,8 @@
             cursor: pointer;
             transition: background 0.3s;
             z-index: 3;
+            /* السماح بالتفاعل مع الأيقونة فقط */
+            pointer-events: auto;
         }
 
         .fullscreen-icon:hover {
@@ -295,6 +466,8 @@
             font-family: 'Tajawal', sans-serif;
             text-decoration: none;
             display: inline-block;
+            /* السماح بالتفاعل مع الزر */
+            pointer-events: auto;
         }
 
         .btn-download:hover {
@@ -388,6 +561,8 @@
             font-weight: bold;
             transition: transform 0.3s;
             margin-top: 10px;
+            /* السماح بالتفاعل مع الرابط */
+            pointer-events: auto;
         }
 
         .discord-link:hover {
@@ -466,6 +641,8 @@
             </div>
             <h1 id="header-title">نشر حسابات وأدوات</h1>
             <p class="subtitle" id="header-subtitle">abumisfer - مشاركة وتحميل الحسابات والأدوات المميزة</p>
+            <!-- الرابط تحت العنوان - تم إزالة النص الثابت -->
+            <a href="https://rtls-lake.vercel.app/" target="_blank" class="header-link" id="header-link"></a>
         </header>
 
         <!-- Content Switcher (Accounts/Tools/News) -->
@@ -488,7 +665,7 @@
                     © 2026 abumisfer - جميع الحقوق محفوظة
                 </div>
                 <div class="version" id="version-text">
-                    الإصدار 1.0.1
+                    الإصدار 1.0.3
                 </div>
                 <a href="https://discord.gg/abumisfer" target="_blank" class="discord-link" id="discord-text">
                     <i>💬</i>
@@ -506,6 +683,7 @@
             ar: {
                 headerTitle: "نشر حسابات وأدوات",
                 headerSubtitle: "abumisfer - مشاركة وتحميل الحسابات والأدوات المميزة",
+                headerLink: "انقر لفتح متصفح ويب هوك سبامر",
                 premium: "✨ جديد",
                 free: "🆓 مجاني",
                 tool: "🛠️ أداة",
@@ -527,6 +705,7 @@
             en: {
                 headerTitle: "Accounts & Tools Sharing",
                 headerSubtitle: "abumisfer - Share premium accounts and tools",
+                headerLink: "Press To Open New Window RTLS WEBHOOK SPAMER",
                 premium: "✨ New",
                 free: "🆓 Free",
                 tool: "🛠️ Tool",
@@ -643,12 +822,7 @@
                 },
                 imageUrl: 'https://media.rockstargames.com/rockstargames-newsite/uploads/167c41006f2356ed140f67748a1c190bb59dcd62.jpg',
                 date: '2026-03-10'
-            },
-           
-            
-            
-            
-            
+            }
         ];
 
         // المحتوى الحالي
@@ -662,6 +836,7 @@
         const newsGrid = document.getElementById('newsGrid');
         const headerTitle = document.getElementById('header-title');
         const headerSubtitle = document.getElementById('header-subtitle');
+        const headerLink = document.getElementById('header-link');
         const copyrightText = document.getElementById('copyright-text');
         const versionText = document.getElementById('version-text');
         const discordText = document.getElementById('discord-text');
@@ -739,6 +914,7 @@
             // تحديث النصوص الثابتة
             headerTitle.textContent = translations[lang].headerTitle;
             headerSubtitle.textContent = translations[lang].headerSubtitle;
+            headerLink.textContent = translations[lang].headerLink;
             copyrightText.textContent = translations[lang].copyright;
             versionText.textContent = translations[lang].version;
             discordText.innerHTML = `<i>💬</i> ${translations[lang].discord}`;
@@ -894,5 +1070,20 @@
 
     <!-- إضافة خط Tajawal -->
     <link href="https://fonts.googleapis.com/css2?family=Tajawal:wght@400;500;700&display=swap" rel="stylesheet">
+
+    <!--Start of Tawk.to Script-->
+    <script type="text/javascript">
+    var Tawk_API=Tawk_API||{}, Tawk_LoadStart=new Date();
+    (function(){
+    var s1=document.createElement("script"),s0=document.getElementsByTagName("script")[0];
+    s1.async=true;
+    s1.src='https://embed.tawk.to/69b128c824af641c34610e86/1jje0ejs2';
+    s1.charset='UTF-8';
+    s1.setAttribute('crossorigin','*');
+    s0.parentNode.insertBefore(s1,s0);
+    })();
+    </script>
+    <!--End of Tawk.to Script-->
+
 </body>
 </html>
