@@ -25,7 +25,7 @@ function loadData() {
             email: '70xplay_com_re9a',
             password: 'wbsite:70XpLaY.com',
             details: { ar: 'لعبه وحده', en: 'one game' },
-            date: new Date().toLocaleString('ar-SA'),
+            date: formatDate(new Date()),
             imageUrl: 'https://gaming-cdn.com/images/products/20991/orig/resident-evil-requiem-pc-steam-cover.jpg?v=1771856840'
         }
     ];
@@ -38,7 +38,7 @@ function loadData() {
             downloadUrl: 'https://example.com/tool.zip',
             key: 'NoKey',
             details: { ar: 'ينظف جهازك من التلقيم و الفيروسات', en: 'Cleans your device' },
-            date: new Date().toLocaleString('ar-SA'),
+            date: formatDate(new Date()),
             imageUrl: 'https://via.placeholder.com/300x180?text=Tool'
         }
     ];
@@ -50,9 +50,28 @@ function loadData() {
             title: { ar: 'مرحبا بكم في الموقع', en: 'Welcome to the site' },
             content: { ar: 'تم إطلاق الموقع الجديد', en: 'New site launched' },
             imageUrl: 'https://via.placeholder.com/600x400?text=Welcome',
-            date: new Date().toLocaleString('ar-SA')
+            date: formatDate(new Date())
         }
     ];
+}
+
+// =============================================
+// دالة تنسيق التاريخ
+// =============================================
+function formatDate(date) {
+    const day = date.getDate();
+    const month = date.getMonth() + 1;
+    const year = date.getFullYear();
+    
+    // تنسيق الوقت
+    let hours = date.getHours();
+    const minutes = date.getMinutes().toString().padStart(2, '0');
+    const ampm = hours >= 12 ? 'PM' : 'AM';
+    
+    hours = hours % 12;
+    hours = hours ? hours : 12; // الساعة 0 تصبح 12
+    
+    return `${month}/${day}/${year} ${hours}:${minutes} ${ampm}`;
 }
 
 // حفظ البيانات في localStorage
@@ -126,6 +145,28 @@ window.logout = function() {
 };
 
 // =============================================
+// دوال النسخ
+// =============================================
+
+// دالة نسخ النص
+window.copyToClipboard = function(text, buttonElement) {
+    navigator.clipboard.writeText(text).then(() => {
+        // حفظ النص الأصلي للزر
+        const originalText = buttonElement.innerHTML;
+        
+        // تغيير نص الزر
+        buttonElement.innerHTML = '✅ تم النسخ';
+        
+        // إعادة النص الأصلي بعد ثانيتين
+        setTimeout(() => {
+            buttonElement.innerHTML = originalText;
+        }, 2000);
+    }).catch(() => {
+        alert('❌ فشل النسخ');
+    });
+};
+
+// =============================================
 // إدارة المحتوى (للمدير فقط)
 // =============================================
 
@@ -158,7 +199,7 @@ window.addAccount = function() {
         email: email,
         password: password,
         details: { ar: detailsAr, en: detailsEn || detailsAr },
-        date: new Date().toLocaleString('ar-SA'),
+        date: formatDate(new Date()),
         imageUrl: imageUrl || 'https://via.placeholder.com/300x180?text=Account'
     };
     
@@ -206,7 +247,7 @@ window.addTool = function() {
         downloadUrl: downloadUrl,
         key: key || 'NoKey',
         details: { ar: detailsAr, en: detailsEn || detailsAr },
-        date: new Date().toLocaleString('ar-SA'),
+        date: formatDate(new Date()),
         imageUrl: imageUrl || 'https://via.placeholder.com/300x180?text=Tool'
     };
     
@@ -251,7 +292,7 @@ window.addNews = function() {
         title: { ar: titleAr, en: titleEn || titleAr },
         content: { ar: contentAr, en: contentEn || contentAr },
         imageUrl: imageUrl || 'https://via.placeholder.com/600x400?text=News',
-        date: new Date().toLocaleString('ar-SA')
+        date: formatDate(new Date())
     };
     
     news.unshift(newNews);
@@ -413,8 +454,9 @@ const translations = {
         tool: "🛠️ أداة",
         news: "📰 خبر",
         downloadButton: "تحميل الملف",
+        copyButton: "نسخ",
         copyright: "© 2026 abumisfer - جميع الحقوق محفوظة",
-        version: "الإصدار 1.0.5",
+        version: "الإصدار 1.0.3",
         discord: "تواصل معنا على Discord",
         email: "📧",
         password: "🔑",
@@ -435,8 +477,9 @@ const translations = {
         tool: "🛠️ Tool",
         news: "📰 News",
         downloadButton: "Download File",
+        copyButton: "Copy",
         copyright: "© 2026 abumisfer - All rights reserved",
-        version: "Version 1.0.5",
+        version: "Version 1.0.3",
         discord: "Contact us on Discord",
         email: "📧",
         password: "🔑",
@@ -573,9 +616,16 @@ function displayAccountsAndTools() {
                 ${translations[currentLang].downloadButton} ⬇️
             </button>`;
         } else {
+            // عرض الإيميل مع زر نسخ
             infoHtml = `
-                <div>${translations[currentLang].email} ${item.email}</div>
-                <div>${translations[currentLang].password} ${item.password}</div>
+                <div style="display: flex; justify-content: space-between; align-items: center; margin-bottom: 5px;">
+                    <span>${translations[currentLang].email} ${item.email}</span>
+                    <button class="btn-copy" onclick="copyToClipboard('${item.email}', this)" style="background: #764ba2; color: white; border: none; padding: 3px 10px; border-radius: 5px; cursor: pointer; font-size: 0.8em;">${translations[currentLang].copyButton}</button>
+                </div>
+                <div style="display: flex; justify-content: space-between; align-items: center;">
+                    <span>${translations[currentLang].password} ${item.password}</span>
+                    <button class="btn-copy" onclick="copyToClipboard('${item.password}', this)" style="background: #764ba2; color: white; border: none; padding: 3px 10px; border-radius: 5px; cursor: pointer; font-size: 0.8em;">${translations[currentLang].copyButton}</button>
+                </div>
             `;
         }
         
